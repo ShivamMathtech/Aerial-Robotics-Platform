@@ -1,0 +1,7 @@
+import {memo} from 'react';
+import {LineChart,Line,XAxis,YAxis,CartesianGrid,Tooltip,ResponsiveContainer} from 'recharts';
+import type {Telemetry} from '../types';
+export const Chart=memo(function Chart({data,fields,colors=['#00e69a','#ffae42','#00baff'],height=105,autoscale=true}:{data:Telemetry[];fields:string[];colors?:string[];height?:number;autoscale?:boolean}){
+ const rows=data.filter((_,i)=>i%Math.max(1,Math.floor(data.length/220))===0||i===data.length-1).map(t=>({time:t.sim_time,...Object.fromEntries(fields.map(f=>[f,f.split('.').reduce((v:any,k)=>v?.[k],t)]))}));
+ return <div className="chart" data-testid="telemetry-chart" style={{height}}><ResponsiveContainer width="100%" height="100%"><LineChart data={rows} margin={{top:8,right:7,left:-25,bottom:0}}><CartesianGrid stroke="#123044" strokeDasharray="2 3"/><XAxis dataKey="time" type="number" domain={['dataMin','dataMax']} tickFormatter={n=>n.toFixed(0)+'s'} tick={{fontSize:9,fill:'#7999ad'}} tickCount={5}/><YAxis domain={autoscale?['auto','auto']:[-180,180]} tick={{fontSize:9,fill:'#7999ad'}} tickFormatter={n=>Number(n).toFixed(0)} width={52}/><Tooltip contentStyle={{background:'#061521',border:'1px solid #266582',fontSize:11}} labelFormatter={v=>`Simulation ${Number(v).toFixed(2)}s`} formatter={(v:number)=>v.toFixed(3)}/>{fields.map((f,i)=><Line key={f} type="linear" dataKey={f} stroke={colors[i%colors.length]} strokeWidth={1.4} dot={false} isAnimationActive={false}/>)}</LineChart></ResponsiveContainer></div>
+});

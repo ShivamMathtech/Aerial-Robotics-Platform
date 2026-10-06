@@ -1,0 +1,3 @@
+import React from 'react';import ReactDOM from 'react-dom/client';import App from './App';import './style.css';
+class ErrorBoundary extends React.Component<{children:React.ReactNode},{error:string}>{state={error:''};static getDerivedStateFromError(e:Error){return {error:e.message}}render(){return this.state.error?<div style={{padding:40,color:'#eee',background:'#061521'}}><h1>Dashboard could not render</h1><p>{this.state.error}</p><button onClick={()=>location.reload()}>Reload dashboard</button></div>:this.props.children}}
+ReactDOM.createRoot(document.getElementById('root')!).render(<ErrorBoundary><App/></ErrorBoundary>);
